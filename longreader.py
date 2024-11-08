@@ -1,6 +1,4 @@
-"""
-This script takes a chunk of text and returns the audio for that chunk.
-"""
+"""Convert long texts into speech audio using asynchronous processing."""
 
 import io
 from typing import Dict
@@ -34,14 +32,44 @@ async def get_audio(
     chunk_no: int,
     voice: str
 ) -> None:
-    """Get the audio for a chunk of text."""
+    """Process a text chunk and generate sped-up audio data.
+
+    This function handles the processing of a single text chunk by rewriting it
+    for TTS, generating speech audio using the OpenAI TTS API, speeding up the
+    audio, and then sending it to the next stage in the pipeline.
+
+    Args:
+      chunk (str):
+        The text chunk to process.
+      client (httpx.AsyncClient):
+        An asynchronous HTTP client for making requests.
+      ant_sem (Semaphore):
+        Semaphore to limit concurrent requests to the Anthropic API.
+      oai_sem (Semaphore):
+        Semaphore to limit concurrent requests to the OpenAI API.
+      send_to (MemoryObjectSendStream):
+        The send stream to pass the processed audio data.
+      chunk_no (int):
+        The chunk number for logging and tracking purposes.
+      voice (str):
+        The voice identifier to use for speech synthesis.
+
+    Returns:
+      None
+
+    Raises:
+      ValueError:
+        If any step of the processing fails.
+      httpx.HTTPStatusError:
+        If any API response contains an HTTP error status.
+    """
     for_read = await rewrite_for_tts(chunk, client, ant_sem, chunk_no)
     audio = await generate_speech(for_read, voice, client, oai_sem, chunk_no)
 
     logger.info('Speeding up chunk {}', chunk_no)
     # Use BytesIO to avoid saving to disk
     memory_file = io.BytesIO()
-    memory_file.name = "foobar.raw"
+    memory_file.name = 'foobar.raw'
     memory_file.write(audio)
     memory_file.seek(0)
     with sf.SoundFile(
@@ -61,7 +89,25 @@ async def get_audio(
 
 
 async def combine_audio_files(**kwargs) -> Dict[str, np.ndarray]:
-    """Combines audio files into a single numpy array."""
+    """Combine multiple audio chunks into a single audio array.
+
+    This function accepts keyword arguments where each key corresponds to a
+    chunk identifier (e.g., 'chunk_0') and each value is a NumPy array
+    representing audio data. It sorts the chunks based on their identifiers and
+    concatenates them into a single audio array.
+
+    Args:
+      **kwargs:
+        Variable length keyword arguments representing audio chunks.
+
+    Returns:
+      Dict[str, np.ndarray]:
+        A dictionary containing the combined audio under the key 'combined'.
+
+    Raises:
+      ValueError:
+        If no audio chunks are provided.
+    """
     logger.info('Combining audio files')
     audios = {
         int(k.split('_')[1]): v
@@ -78,7 +124,30 @@ async def long_read(
     voice: str,
     spacy_model: SpacyNLP
 ) -> np.ndarray:
-    """Takes a string of text and returns the audio for that text."""
+    """Convert a long text into a combined audio array using TTS.
+
+    This function processes a long text by splitting it into manageable chunks,
+    processing each chunk asynchronously to generate speech audio, speeds up the
+    audio, and combines all the audio chunks into a single NumPy array.
+
+    Args:
+      text (str):
+        The full text to be converted into speech.
+      voice (str):
+        The voice identifier to use for speech synthesis.
+      spacy_model (SpacyNLP):
+        The spaCy language model used for text processing.
+
+    Returns:
+      np.ndarray:
+        A NumPy array containing the combined audio data.
+
+    Raises:
+      ValueError:
+        If text splitting or audio processing fails.
+      httpx.HTTPStatusError:
+        If any API response contains an HTTP error status.
+    """
     async with httpx.AsyncClient() as client:
         logger.info('Splitting text into chunks')
         doc = spacy_model(text)

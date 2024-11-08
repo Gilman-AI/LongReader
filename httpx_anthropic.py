@@ -1,4 +1,4 @@
-"""Uses the old Claude 3.5 model to format text for speech synthesis."""
+"""Rewrite text for speech synthesis using the Anthropic API."""
 
 import os
 
@@ -13,25 +13,37 @@ if not ANTHROPIC_API_KEY:
     raise ValueError('ANTHROPIC_API_KEY is not set')
 
 
-REWRITE_PROMPT = """Please generate a speech audio file from the following text by passing it to the `read_aloud` tool.
-
-<text>
-{text}
-</text>"""
-
+REWRITE_PROMPT = (
+    'Please generate a speech audio file from the following text by passing it '
+    'to the `read_aloud` tool.\n\n<text>\n{text}\n</text>'
+)
 
 READ_ALOUD_TOOL = {
-    "name": "read_aloud",
-    "description": "Converts the provided text into an audio file suitable for text-to-speech systems. Before generating the audio file, you must process the text by removing any word wrapping, citations, footnotes, or any other interrupting content that would interfere with a natural reading flow. The processed text should be exactly the same as the original in terms of words and meaning but formatted without interruptions. Include the processed text in the 'processed_text' parameter of the tool input.",
-    "input_schema": {
-        "type": "object",
-        "properties": {
-            "processed_text": {
-                "type": "string",
-                "description": "The text to be read aloud, processed to remove any word wrapping, citations, or other interrupting content that would interfere with a Text-to-Speech system reading it as a human would."
+    'name': 'read_aloud',
+    'description': (
+        'Converts the provided text into an audio file suitable for text-to-'
+        'speech systems. Before generating the audio file, you must process '
+        'the text by removing any word wrapping, citations, footnotes, or any '
+        'other interrupting content that would interfere with a natural '
+        'reading flow. The processed text should be exactly the same as the '
+        'original in terms of words and meaning but formatted without '
+        'interruptions. Include the processed text in the "processed_text" '
+        'parameter of the tool input.'
+    ),
+    'input_schema': {
+        'type': 'object',
+        'properties': {
+            'processed_text': {
+                'type': 'string',
+                'description': (
+                    'The text to be read aloud, processed to remove any word '
+                    'wrapping, citations, or other interrupting content that '
+                    'would interfere with a Text-to-Speech system reading it '
+                    'as a human would.'
+                )
             }
         },
-        "required": ["processed_text"]
+        'required': ['processed_text']
     }
 }
 
@@ -42,7 +54,33 @@ async def rewrite_for_tts(
     semaphore: Semaphore,
     chunk_no: int
 ) -> str:
-    """Rewrite text for TTS."""
+    """Rewrite text for Text-to-Speech processing using the Anthropic API.
+
+    This function sends a request to the Anthropic Claude 3.5 model to process
+    and clean up the input text, preparing it for speech synthesis by removing
+    any interruptions like citations or footnotes. It handles request throttling
+    using a semaphore to limit the number of concurrent API calls.
+
+    Args:
+      text (str):
+        The original text to be processed for TTS.
+      client (httpx.AsyncClient):
+        An asynchronous HTTP client for making requests.
+      semaphore (Semaphore):
+        A semaphore to limit the number of concurrent API requests.
+      chunk_no (int):
+        The chunk number for logging and tracking purposes.
+
+    Returns:
+      str:
+        The processed text suitable for speech synthesis.
+
+    Raises:
+      ValueError:
+        If the Anthropic API returns an unexpected response format.
+      httpx.HTTPStatusError:
+        If the API response contains an HTTP error status.
+    """
     api_request = {
         'model': 'claude-3-5-sonnet-20240620',
         'max_tokens': 8192,

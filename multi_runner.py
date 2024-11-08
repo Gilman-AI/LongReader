@@ -1,4 +1,4 @@
-"""Aframework for running prompts in parallel."""
+"""Basic framework for running asynchronous tasks in Directed Acyclic Graphs."""
 
 import inspect
 

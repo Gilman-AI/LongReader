@@ -1,3 +1,4 @@
+"""Convert a text file into an M4A audio file using the LongReader APIs."""
 import argparse
 import os
 import random
@@ -7,14 +8,17 @@ import ffmpeg
 import trio
 from loguru import logger
 from spacy import load as spacy_load
+import soundfile as sf
 
 from longreader import long_read
-import soundfile as sf
 
 
 parser = argparse.ArgumentParser(
     prog='ReadToM4A',
-    description='Convert a text file to an M4A file using LongReader APIs',
+    description=(
+        'Converts a text file to an M4A file using 3rd-party language models, '
+        'text-to-speech, and ffmpeg.'
+    ),
     epilog='Copyright © 2024 Herbert F Gilman. All rights reserved.'
 )
 parser.add_argument(
@@ -37,15 +41,36 @@ parser.add_argument(
 
 
 async def main(args):
+    """Convert a text file to an M4A audio file using the LongReader APIs.
+
+    This function reads the input text file, processes it to generate speech
+    audio, and writes the output to an M4A file using FFmpeg.
+
+    Args:
+      args (argparse.Namespace):
+        Parsed command-line arguments containing input and output paths, and
+        optional voice selection.
+
+    Returns:
+      None
+
+    Raises:
+      ValueError:
+        If the input or output file extensions are incorrect.
+      FileNotFoundError:
+        If the input file does not exist.
+      Exception:
+        If any step of the audio processing or file operations fails.
+    """
     if not args.output.endswith('.m4a'):
         raise ValueError('Output file must have .m4a extension')
     if not args.input.endswith('.txt'):
         raise ValueError('Input file must have .txt extension')
 
-    logger.info(f'Reading {args.input}')
-    with open(args.input, 'r') as f:
+    logger.info('Reading {}', args.input)
+    with open(args.input, 'r', encoding='utf-8') as f:
         text = f.read()
-    logger.info(f'Loading spaCy model')
+    logger.info('Loading spaCy model')
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         spacy_model = spacy_load('en_core_web_trf')
@@ -64,5 +89,5 @@ async def main(args):
 
 
 if __name__ == '__main__':
-    args = parser.parse_args()
-    trio.run(main, args)
+    args_in = parser.parse_args()
+    trio.run(main, args_in)

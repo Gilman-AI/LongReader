@@ -1,5 +1,4 @@
-"""Use the OpenAI TTS API to generate speech."""
-
+"""Generate speech audio using the OpenAI Text-to-Speech API."""
 
 import os
 
@@ -21,7 +20,34 @@ async def generate_speech(
         semaphore: Semaphore,
         chunk_no: int
 ) -> bytes:
-    """Generate speech from text using the OpenAI TTS API."""
+    """Generate speech audio data from text using the OpenAI Text-to-Speech API.
+
+    This function sends a POST request to the OpenAI Text-to-Speech (TTS) API to
+    generate audio data from the provided text input. It handles request
+    throttling using a semaphore to limit the number of concurrent API calls.
+
+    Args:
+      text (str):
+        The text to be converted into speech. Must not exceed 4096 characters.
+      voice (str):
+        The voice identifier to use for speech synthesis.
+      client (httpx.AsyncClient):
+        An asynchronous HTTP client for making requests.
+      semaphore (Semaphore):
+        A semaphore to limit the number of concurrent API requests.
+      chunk_no (int):
+        The chunk number for logging and tracking purposes.
+
+    Returns:
+      bytes:
+        The raw audio data in PCM format returned by the TTS API.
+
+    Raises:
+      ValueError:
+        If the input text exceeds the maximum allowed length.
+      httpx.HTTPStatusError:
+        If the TTS API response contains an HTTP error status.
+    """
     if len(text) > 4096:
         raise ValueError('Text is too long to be processed by the OpenAI API')
     api_request = {

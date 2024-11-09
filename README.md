@@ -1,6 +1,6 @@
 # LongReader: OpenAI TTS Without Limits
 
-**LongReader** is a collection of Python scripts and modules designed to convert long text files into high-quality M4A audio files. It leverages the power of the OpenAI Text-to-Speech API and the Anthropic API to preprocess text, generate natural-sounding speech, and handle long texts efficiently by processing them asynchronously in chunks.
+**LongReader** is a widget to get around the character limit for OpenAI TTS by splitting documents up and recombining the resulting audio files. It uses spaCy and the Anthropic API to preprocess text, the OpenAI Text-to-Speech API to generate natural-sounding speech, and asynchronous Python scripting to handle long texts efficiently.
 
 ## Features
 
@@ -145,6 +145,10 @@ python -m spacy download en_core_web_sm
 
 Copyright (c) 2024 Herbert F Gilman. Licensed under the Apache License, Version 2.0. You may not use the files in this repository except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0, and a copy is included in [LICENSE](LICENSE). Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-See the [NOTICE](NOTICE) file for further copyright and licensing information.
+See the [NOTICE](NOTICE.md) file for further copyright and licensing information.
 
 This program calls the OpenAI API and the Anthropic API for machine-learning inference services. Use of these APIs is governed by their respective terms of service ([OpenAI](https://openai.com/policies/business-terms/), [Anthropic](https://www.anthropic.com/legal/commercial-terms)).
+
+---
+*"Reading aloud seemed to be giving us back certain things that our phones and screens were taking away from us [...] Reading aloud is one of the most consequential gifts we can give to the people we love."*
+*-- Megan Cox Gurdon, [Bowdoin Magazine](https://www.bowdoin.edu/news/2020/11/saying-it-out-loud.html).*

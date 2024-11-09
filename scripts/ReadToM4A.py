@@ -32,7 +32,10 @@ parser = argparse.ArgumentParser(
         'Converts a text file to an M4A file using 3rd-party language models, '
         'text-to-speech, and ffmpeg.'
     ),
-    epilog='Copyright (c) 2024 Herbert F Gilman. Licensed under the MIT License.'
+    epilog=(
+        'Copyright (c) 2024 Herbert F Gilman. Licensed under the Apache '
+        'License, Version 2.0.'
+    )
 )
 parser.add_argument(
     'input',

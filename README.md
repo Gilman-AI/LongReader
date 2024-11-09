@@ -137,5 +137,14 @@ You will need to download the `en_core_web_sm` model separately:
 python -m spacy download en_core_web_sm
 ```
 
----
-Copyright © 2024 Herbert F Gilman. All rights reserved.
+## Acknowledgements
+
+**LongReader** utilizes several open-source packages and third-party tools. We thank the [Trio](https://github.com/python-trio/trio) community for developing this robust asynchronous framework. We acknowledge the contributions of Alex Grönholm and the [AnyIO](https://github.com/agronholm/anyio) developers. We thank Delgan for creating [Loguru](https://github.com/Delgan/loguru), making logging simpler and more pleasant. We acknowledge Explosion and the spaCy community for their work on [this powerful NLP library](https://github.com/explosion/spaCy), as well as the contributors of the pre-trained `en_core_web_trf` model. We thank the maintainers of [SoundFile](https://github.com/bastibe/python-soundfile). We acknowledge Erik de Castro Lopo for developing [libsndfile](http://www.mega-nerd.com/libsndfile/). We acknowledge the [NumPy](https://github.com/numpy/numpy) developers for their essential work in the scientific Python ecosystem. We thank Brian McFee for developing [PyRubberband](https://github.com/bmcfee/pyrubberband). We acknowledge Breakfast Quay and the developers of the [Rubber Band Library](https://breakfastquay.com/rubberband/). We thank Ilya Kulakov for developing [orjson](https://github.com/ijl/orjson). We acknowledge the Encode team for creating [HTTPX](https://github.com/encode/httpx). We acknowledge the [FFmpeg project](https://ffmpeg.org/) and its contributors. We thank OpenAI for providing the Text-to-Speech API and language models. We thank Anthropic for providing access to their language models. Finally, we acknowledge the [Python Software Foundation](https://www.python.org/) and express our gratitude to the Python community worldwide.
+
+## License
+
+Copyright (c) 2024 Herbert F Gilman. Licensed under the Apache License, Version 2.0. You may not use the files in this repository except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0, and a copy is included in [LICENSE](LICENSE). Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+See the [NOTICE](NOTICE) file for further copyright and licensing information.
+
+This program calls the OpenAI API and the Anthropic API for machine-learning inference services. Use of these APIs is governed by their respective terms of service ([OpenAI](https://openai.com/policies/business-terms/), [Anthropic](https://www.anthropic.com/legal/commercial-terms)).

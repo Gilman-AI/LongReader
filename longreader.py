@@ -164,7 +164,7 @@ async def long_read(
     async with httpx.AsyncClient() as client:
         logger.info('Splitting text into chunks')
         doc = spacy_model(text)
-        chunks = split_text_into_chunks(doc, max_chunk_size=4000)
+        chunks = split_text_into_chunks(doc, max_chunk_size=3800)
 
         num_chunks = len(chunks)
         dynamic_params = ['chunk_'+str(i) for i in range(num_chunks)]

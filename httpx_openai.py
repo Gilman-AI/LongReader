@@ -79,7 +79,8 @@ async def generate_speech(
                 'Authorization': f'Bearer {OPENAI_API_KEY}',
                 'Content-Type': 'application/json'
             },
-            data=api_request_bytes
+            data=api_request_bytes,
+            timeout=300.0
         )
         response.raise_for_status()
         audio_bytes = response.content

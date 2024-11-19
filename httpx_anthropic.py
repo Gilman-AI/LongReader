@@ -115,7 +115,7 @@ async def rewrite_for_tts(
                 'x-api-key': ANTHROPIC_API_KEY,
                 'Content-Type': 'application/json'
             },
-            timeout=60.0,
+            timeout=300.0,
             data=api_request_bytes
         )
         response.raise_for_status()
